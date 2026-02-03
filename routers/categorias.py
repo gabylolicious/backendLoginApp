@@ -32,7 +32,7 @@ async def list_categorias():
         "data" : categorias
     }
 
-@router.post("/")
+@router.post("/", dependencies=[Depends(verify_token)])
 async def create_categoria(categoria : Categoria):
     categoria.id = str(uuid4())
     # TO DO: Acá se conversaría con una base de datos
@@ -42,7 +42,7 @@ async def create_categoria(categoria : Categoria):
         "data" : categoria
     } 
 
-@router.put("/")
+@router.put("/", dependencies=[Depends(verify_token)])
 async def update_categoria(categoria : Categoria):
     for cat in categorias:
         if cat.id == categoria.id:
@@ -58,7 +58,7 @@ async def update_categoria(categoria : Categoria):
         detail="Categoria id no existe"
     )
 
-@router.delete("/{categoria_id}")
+@router.delete("/{categoria_id}", dependencies=[Depends(verify_token)])
 async def delete_categorias(categoria_id : str):
     for i, cat in enumerate(categorias):
         # Por cada indice i va a tomar el valor del indice y cat va a tomar el valor de la categoria
@@ -74,7 +74,7 @@ async def delete_categorias(categoria_id : str):
     )
 
 # Que devuelva una categoria por su id (buscar)
-@router.get("/{categorias_id}")
+@router.get("/{categorias_id}", dependencies=[Depends(verify_token)])
 async def buscar_categorias(categoria_id : str):
     for i,cat in enumerate(categorias):
         if cat.id == categoria_id:

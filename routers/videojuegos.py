@@ -21,6 +21,6 @@ videojuegos = []
 @router.get("/")
 async def list_videojuegos():
     return {
-        "msg" : "";
+        "msg" : "",
         "data" : videojuegos
     }

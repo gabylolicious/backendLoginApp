@@ -1,0 +1,2 @@
+accesos = {}
+# modulo = archivo .py

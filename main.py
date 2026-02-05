@@ -48,7 +48,17 @@ async def login(login_request : LoginRequest):
             detail="Error en login, credenciales incorrectas"
             )
 
-
-
+@app.get("/logout")
+async def logout(token : str):
+    if token.encode("utf-8") in accesos:
+        # Si está en la lista de accesos lo sacamos, sino nada
+        accesos.pop(token.encode("utf-8"))
+        return {
+            "msg" : ""
+        }
+    else:
+        return {
+            "msg" : "Token no existe"
+        }
 app.include_router(categorias.router)
 app.include_router(videojuegos.router)

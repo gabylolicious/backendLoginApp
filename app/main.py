@@ -3,8 +3,7 @@ import bcrypt
 from fastapi import Depends, FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from fastapi.middleware.cors import CORSMiddleware
-from .routers.categorias import categorias
-from .routers.videojuegos import videojuegos
+from .routers import categorias, videojuegos
 from .data import accesos
 # . = si es al mismo nivel
 # .. = un nivel más arriba
@@ -42,7 +41,7 @@ async def login(login_request : LoginRequest, db:Session = Depends(get_db)):
             detail="Error en login, credenciales incorrectas"
         )
     
-    hora_actual = time.time.ns()
+    hora_actual = time.time_ns()
     cadena_a_encriptar = f"{login_request.username}-{str(hora_actual)}"
     cadena_hasheada = bcrypt.hashpw(
         cadena_a_encriptar.encode("utf-8"),

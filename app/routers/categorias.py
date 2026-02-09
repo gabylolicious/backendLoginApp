@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Header
 from uuid import uuid4
 from pydantic import BaseModel
-from ..data import accesos
+from app.data import accesos
 
 class Categoria(BaseModel):
     id : str | None = None

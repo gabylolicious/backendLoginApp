@@ -68,40 +68,21 @@ async def login(login_request : LoginRequest, db:Session = Depends(get_db)):
         "token" : cadena_hasheada
     }
 
-
-    # if login_request.username == "PROGRAWEB" and login_request.password == "123123123":
-    #     hora_actual = time.time.ns()
-    #     cadena_a_encriptar = f"{login_request.username}-{str(hora_actual)}"
-    #     cadena_hasheada = bcrypt.hashpw(
-    #         cadena_a_encriptar.encode("utf-8"),
-    #         bcrypt.gensalt()
-    #     ) # Esta es una cadena de bytes
-    #     # Una vez el token creado
-    #     accesos[cadena_hasheada] = {
-    #         "ultimo_login" : time.time.ns()
-    #     }
-
-    #     return{
-    #         "msg" : "Acceso concedido",
-    #         "token" : cadena_hasheada
-    #     }
-    # else:
-    #     raise HTTPException(
-    #         status_code=400, 
-    #         detail="Error en login, credenciales incorrectas"
-    #         )
-
 @app.get("/logout")
-async def logout(token : str):
-    if token.encode("utf-8") in accesos:
-        # Si está en la lista de accesos lo sacamos, sino nada
-        accesos.pop(token.encode("utf-8"))
-        return {
-            "msg" : ""
-        }
-    else:
+async def logout(token : str, db : Session = Depends(get_db)):
+    db_acceso = db.query(Acceso).filter(Acceso.id == token).first()
+
+    if not db_acceso:
         return {
             "msg" : "Token no existe"
         }
+    # Si sí existe
+    db.delete(db_acceso)
+    db.commit() # ==== IMPORTANTE O NO SE ESCRIBE EN LA BD ===
+    # refresh no es necesario pues ya  se borró el objeto
+    return {
+        "msg" : ""
+    }
+
 app.include_router(categorias.router)
 app.include_router(videojuegos.router)

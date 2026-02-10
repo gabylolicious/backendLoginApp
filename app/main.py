@@ -1,3 +1,4 @@
+import datetime
 import time
 import bcrypt
 from fastapi import Depends, FastAPI, HTTPException
@@ -9,7 +10,7 @@ from .data import accesos
 # .. = un nivel más arriba
 from .database import get_db
 from sqlalchemy.orm import Session
-from .models import Usuario
+from .models import Usuario, Acceso
 
 app = FastAPI()
 
@@ -47,7 +48,17 @@ async def login(login_request : LoginRequest, db:Session = Depends(get_db)):
         cadena_a_encriptar.encode("utf-8"),
         bcrypt.gensalt()
         ) # Esta es una cadena de bytes
+    
     # Una vez el token creado
+    db_acceso = Acceso(
+        #id = str(cadena_hasheada),
+        id = cadena_hasheada.decode("utf-8"),
+        ultimo_login = datetime.datetime.now() # no es lo mejor; deberia generarlo la bd
+    )
+    db.add(db_acceso) # Guardamos el acceso actual en la bd
+    db.commit()
+    db.refresh(db_acceso)
+
     #accesos[cadena_hasheada] = {
     #    "ultimo_login" : time.time.ns()
     #}

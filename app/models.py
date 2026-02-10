@@ -1,5 +1,5 @@
 import uuid
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, DateTime
 from .database import Base
 
 class Usuario(Base):
@@ -12,3 +12,15 @@ class Usuario(Base):
     )
     username = Column(String, unique=True)
     password = Column(String, unique=True)
+
+class Acceso(Base):
+    __tablename__ = "acceso" #mayus y min tiene que ser todo igual
+    id = Column(
+        String,
+        primary_key=True,
+        # no hay un default...
+        index=True
+    )
+    ultimo_login = Column(
+        DateTime
+    )

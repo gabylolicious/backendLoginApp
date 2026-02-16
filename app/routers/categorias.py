@@ -6,10 +6,7 @@ from app.data import accesos
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models import Acceso, CategoriaModel # .. para retroceder 1 nivel
-
-class Categoria(BaseModel):
-    id : str | None = None
-    nombre: str
+from ..schemas import Categoria
 
 router = APIRouter(
     # Dos cosas: el prefijo de la ruta

@@ -41,9 +41,7 @@ class Acceso(Base):
         # no hay un default...
         index=True
     )
-    ultimo_login = Column(
-        DateTime
-    )
+    ultimo_login = Column(DateTime)
 
 class CategoriaModel(Base):
     __tablename__ = "categoria"
@@ -53,6 +51,24 @@ class CategoriaModel(Base):
         default=lambda: str(uuid.uuid4()),
         index=True
     )
-    nombre = Column(
-        String
+    nombre = Column(String)
+
+    videojuegos = relationship("Videojuego", back_populates="categoria")
+
+class Videojuego(Base):
+    __tablename__ = "videojuego"
+    id = Column (
+        UUID(as_uuid = True),
+        primary_key = True,
+        default=lambda: str(uuid.uuid4()),
+        index=True
     )
+    nombre = Column(String)
+    descripcion = Column(String)
+    url_imagen = Column(String)
+
+    categoria_id = Column (
+        UUID(as_uuid=True),
+        ForeignKey("categoria_id", unique=True)
+    )
+    categoria = relationship("CategoriaModel", back_populates="videojuegos")

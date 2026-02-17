@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Header
 from uuid import uuid4
 from pydantic import BaseModel
 from app.data import accesos
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from ..database import get_db
 from ..models import Acceso, CategoriaModel # .. para retroceder 1 nivel
 from ..schemas import Categoria
@@ -40,7 +40,9 @@ async def verify_token(x_token : str = Header(...), db : Session = Depends(get_d
 
 @router.get("/", dependencies=[Depends(verify_token)])
 async def list_categorias(db : Session = Depends(get_db)):
-    lista = db.query(CategoriaModel).all()
+    lista = db.query(CategoriaModel).options (
+        selectinload(CategoriaModel.videojuegos)
+    ).all()
 
     return {
         "msg" : "",
